@@ -94,6 +94,28 @@ export default function ProjectDetailPage() {
     }
   }
 
+  const handleGenerateEmail = async (investorId: string) => {
+    try {
+      const response = await fetch(
+        `/api/projects/${projectId}/investors/${investorId}/generate-email`,
+        { method: 'POST' }
+      )
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.details || 'Failed to generate email')
+      }
+
+      const data = await response.json()
+      toast.success('Email generated successfully!')
+      // TODO: Navigate to email approval queue or show modal
+      console.log('Generated email:', data.email)
+    } catch (error) {
+      console.error('Error generating email:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to generate email')
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -340,6 +362,26 @@ export default function ProjectDetailPage() {
                           }}
                         >
                           Start Research
+                        </Button>
+                      </div>
+                    )}
+                    {investor.research_status === 'completed' && (
+                      <div className="mt-4">
+                        <Button
+                          size="sm"
+                          variant="default"
+                          onClick={() => {
+                            toast.promise(
+                              handleGenerateEmail(investor.id),
+                              {
+                                loading: 'Generating email...',
+                                success: 'Email generated!',
+                                error: 'Failed to generate email',
+                              }
+                            )
+                          }}
+                        >
+                          Generate Email
                         </Button>
                       </div>
                     )}
