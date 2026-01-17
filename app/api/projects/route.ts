@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { getProjects, createProject } from '@/lib/supabase/projects'
+import { getProjects } from '@/lib/supabase/projects'
+import type { Project } from '@/types'
 
 export async function GET() {
   try {
@@ -59,7 +60,26 @@ export async function POST(request: Request) {
     }
     console.log('[API] Project data to insert:', projectData)
 
-    const project = await createProject(projectData)
+    // Insert directly using the server client (which has auth context)
+    const { data, error } = await supabase
+      .from('projects')
+      .insert([projectData])
+      .select()
+      .single()
+
+    console.log('[API] Insert result - data:', data, 'error:', error)
+
+    if (error) {
+      console.error('[API] Insert error details:', {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      })
+      throw error
+    }
+
+    const project = data as Project
     console.log('[API] Project created successfully:', project.id)
 
     return NextResponse.json(project, { status: 201 })
