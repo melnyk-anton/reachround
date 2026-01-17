@@ -73,6 +73,27 @@ export default function ProjectDetailPage() {
   const researchedCount = investors.filter(inv => inv.research_status === 'completed').length
   const sentCount = 0 // TODO: Count from emails table
 
+  const handleStartResearch = async (investorId: string) => {
+    try {
+      const response = await fetch(
+        `/api/projects/${projectId}/investors/${investorId}/research`,
+        { method: 'POST' }
+      )
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.details || 'Failed to start research')
+      }
+
+      toast.success('Research completed!')
+      fetchInvestors() // Refresh to show updated status
+    } catch (error) {
+      console.error('Error starting research:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to start research')
+      fetchInvestors() // Refresh to show failed status
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -305,8 +326,20 @@ export default function ProjectDetailPage() {
                     </div>
                     {investor.research_status === 'pending' && (
                       <div className="mt-4">
-                        <Button size="sm" disabled>
-                          Start Research (Coming Soon)
+                        <Button
+                          size="sm"
+                          onClick={() => {
+                            toast.promise(
+                              handleStartResearch(investor.id),
+                              {
+                                loading: 'Researching investor...',
+                                success: 'Research completed!',
+                                error: 'Failed to research investor',
+                              }
+                            )
+                          }}
+                        >
+                          Start Research
                         </Button>
                       </div>
                     )}
