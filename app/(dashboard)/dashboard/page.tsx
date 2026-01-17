@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import type { Project } from '@/types'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
+import { ThemeToggle } from '@/components/layout/ThemeToggle'
 
 export default function DashboardPage() {
   const { user, session, signOut } = useAuth()
@@ -56,13 +57,14 @@ export default function DashboardPage() {
             <h1 className="text-2xl font-bold">ReachRound</h1>
             <p className="text-sm text-muted-foreground">Dashboard</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
             <div className="text-right">
               <p className="text-sm font-medium">{user?.email}</p>
               {hasGmailAccess ? (
-                <p className="text-xs text-green-600">✓ Gmail Connected</p>
+                <p className="text-xs text-green-600 dark:text-green-400">✓ Gmail Connected</p>
               ) : (
-                <p className="text-xs text-amber-600">⚠ Gmail Not Connected</p>
+                <p className="text-xs text-amber-600 dark:text-amber-400">⚠ Gmail Not Connected</p>
               )}
             </div>
             <Button onClick={handleSignOut} variant="outline" size="sm">

@@ -20,11 +20,12 @@ export interface InvestorFinderInput {
   industry?: string
   stage?: string
   targetGeography?: string
+  additionalCriteria?: string
   count: number
 }
 
 export async function findInvestors(input: InvestorFinderInput): Promise<InvestorMatch[]> {
-  const { projectName, oneLiner, industry, stage, targetGeography, count } = input
+  const { projectName, oneLiner, industry, stage, targetGeography, additionalCriteria, count } = input
 
   const systemPrompt = `You are an expert investor research assistant. Your job is to find relevant investors for startups.
 
@@ -65,6 +66,7 @@ Output your response as a JSON array with this structure:
 ${industry ? `**Industry:** ${industry}` : ''}
 ${stage ? `**Stage:** ${stage}` : ''}
 ${targetGeography ? `**Target Geography:** ${targetGeography}` : ''}
+${additionalCriteria ? `**Additional Criteria:** ${additionalCriteria}` : ''}
 
 Please identify ${count} investors who would be most likely to invest in this company. Focus on recent activity (2023-2025) and investors who are actively investing.
 

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { getProject } from '@/lib/supabase/projects'
 import { findInvestors } from '@/lib/agents/investor-finder'
 
 export async function POST(
@@ -15,9 +14,14 @@ export async function POST(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const project = await getProject(params.id)
+    // Verify project exists and user owns it
+    const { data: project, error: projectError } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', params.id)
+      .single()
 
-    if (!project) {
+    if (projectError || !project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
@@ -26,7 +30,7 @@ export async function POST(
     }
 
     const body = await request.json()
-    const { count = 5 } = body
+    const { count = 5, criteria, geography } = body
 
     // Use AI to find investors
     const investors = await findInvestors({
@@ -34,7 +38,8 @@ export async function POST(
       oneLiner: project.one_liner || '',
       industry: project.industry || undefined,
       stage: project.stage || undefined,
-      targetGeography: project.target_geography || undefined,
+      targetGeography: geography || project.target_geography || undefined,
+      additionalCriteria: criteria || undefined,
       count,
     })
 
@@ -42,7 +47,10 @@ export async function POST(
   } catch (error) {
     console.error('Error finding investors:', error)
     return NextResponse.json(
-      { error: 'Failed to find investors' },
+      {
+        error: 'Failed to find investors',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }
