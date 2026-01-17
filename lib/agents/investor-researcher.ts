@@ -85,7 +85,7 @@ Return ONLY the JSON object, no additional text.`
 
   try {
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-20240620',
+      model: 'claude-3-5-sonnet-latest',
       max_tokens: 2048,
       system: systemPrompt,
       messages: [
