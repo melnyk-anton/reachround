@@ -1,48 +1,29 @@
-import Link from 'next/link'
-import { Button } from '@/components/ui/button'
+import { Navigation } from '@/components/landing/Navigation'
+import { HeroSection } from '@/components/landing/HeroSection'
+import { DashboardPreview } from '@/components/landing/DashboardPreview'
+import { TrustBadge } from '@/components/landing/TrustBadge'
+import { LogoMarquee } from '@/components/landing/LogoMarquee'
+import { FeatureCards } from '@/components/landing/FeatureCards'
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24">
-      <div className="text-center max-w-3xl">
-        <h1 className="text-5xl font-bold mb-4">ReachRound</h1>
-        <p className="text-2xl text-muted-foreground mb-4">
-          AI-Powered Investor Outreach
-        </p>
-        <p className="text-lg text-muted-foreground mb-8">
-          Send highly personalized cold emails to investors with deep AI research
-        </p>
+    <div className="min-h-screen bg-background dark:bg-background">
+      <Navigation />
 
-        <div className="flex gap-4 justify-center">
-          <Link href="/login">
-            <Button size="lg">Get Started</Button>
-          </Link>
-          <Link href="/login">
-            <Button size="lg" variant="outline">Sign In</Button>
-          </Link>
-        </div>
+      <main>
+        <HeroSection />
+        <DashboardPreview />
+        <TrustBadge />
+        <LogoMarquee />
+        <FeatureCards />
+      </main>
 
-        <div className="mt-16 grid grid-cols-3 gap-8 text-left">
-          <div>
-            <h3 className="font-semibold mb-2">Deep Research</h3>
-            <p className="text-sm text-muted-foreground">
-              AI researches each investor&apos;s background, investments, and recent activity
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">Personalized Emails</h3>
-            <p className="text-sm text-muted-foreground">
-              Every email references specific insights - no generic templates
-            </p>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">You&apos;re in Control</h3>
-            <p className="text-sm text-muted-foreground">
-              Approve every email before sending from your Gmail account
-            </p>
-          </div>
+      {/* Footer */}
+      <footer className="border-t border-border dark:border-border py-12 px-4 mt-20">
+        <div className="max-w-6xl mx-auto text-center text-sm text-gray-600 dark:text-gray-400">
+          <p>© 2025 ReachRound. All rights reserved.</p>
         </div>
-      </div>
-    </main>
+      </footer>
+    </div>
   )
 }
