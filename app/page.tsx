@@ -26,7 +26,7 @@ export default function Home() {
           <div>
             <h3 className="font-semibold mb-2">Deep Research</h3>
             <p className="text-sm text-muted-foreground">
-              AI researches each investor's background, investments, and recent activity
+              AI researches each investor&apos;s background, investments, and recent activity
             </p>
           </div>
           <div>
@@ -36,7 +36,7 @@ export default function Home() {
             </p>
           </div>
           <div>
-            <h3 className="font-semibold mb-2">You're in Control</h3>
+            <h3 className="font-semibold mb-2">You&apos;re in Control</h3>
             <p className="text-sm text-muted-foreground">
               Approve every email before sending from your Gmail account
             </p>

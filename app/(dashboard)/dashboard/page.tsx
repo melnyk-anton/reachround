@@ -70,7 +70,7 @@ export default function DashboardPage() {
                   <h3 className="font-semibold text-green-900 dark:text-green-100">Gmail Connected</h3>
                 </div>
                 <p className="text-sm text-green-700 dark:text-green-300">
-                  You're all set to send emails from your Gmail account!
+                  You&apos;re all set to send emails from your Gmail account!
                 </p>
               </div>
             ) : (
@@ -162,7 +162,7 @@ export default function DashboardPage() {
                 <div>
                   <h4 className="font-medium text-muted-foreground">Deep Research</h4>
                   <p className="text-sm text-muted-foreground">
-                    AI researches each investor's background and interests
+                    AI researches each investor&apos;s background and interests
                   </p>
                 </div>
               </div>
