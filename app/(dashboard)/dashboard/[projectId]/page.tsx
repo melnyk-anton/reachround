@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import type { Project } from '@/types'
 import { Button } from '@/components/ui/button'
 import { InvestorFinderModal } from '@/components/investors/InvestorFinderModal'
+import { AddInvestorModal } from '@/components/investors/AddInvestorModal'
 import { EditProjectModal } from '@/components/projects/EditProjectModal'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 
@@ -33,6 +34,7 @@ export default function ProjectDetailPage() {
   const [investors, setInvestors] = useState<Investor[]>([])
   const [loading, setLoading] = useState(true)
   const [finderModalOpen, setFinderModalOpen] = useState(false)
+  const [addModalOpen, setAddModalOpen] = useState(false)
   const [editModalOpen, setEditModalOpen] = useState(false)
 
   const fetchProject = async () => {
@@ -185,9 +187,13 @@ export default function ProjectDetailPage() {
                 </div>
                 <Plus className="w-8 h-8 opacity-80" />
               </div>
-              <Button variant="secondary" className="w-full" disabled>
+              <Button
+                variant="secondary"
+                className="w-full"
+                onClick={() => setAddModalOpen(true)}
+              >
                 <Plus className="w-4 h-4 mr-2" />
-                Add Investor (Coming Soon)
+                Add Investor
               </Button>
             </div>
           </div>
@@ -208,7 +214,7 @@ export default function ProjectDetailPage() {
                     <Search className="w-4 h-4 mr-2" />
                     Find Investors
                   </Button>
-                  <Button variant="outline" disabled>
+                  <Button variant="outline" onClick={() => setAddModalOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Add Manually
                   </Button>
@@ -224,7 +230,7 @@ export default function ProjectDetailPage() {
                     <Search className="w-4 h-4 mr-2" />
                     Find More
                   </Button>
-                  <Button variant="outline" size="sm" disabled>
+                  <Button variant="outline" size="sm" onClick={() => setAddModalOpen(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Add Manually
                   </Button>
@@ -318,6 +324,13 @@ export default function ProjectDetailPage() {
         onClose={() => setFinderModalOpen(false)}
         projectId={projectId}
         projectName={project.name}
+      />
+
+      <AddInvestorModal
+        open={addModalOpen}
+        onClose={() => setAddModalOpen(false)}
+        projectId={projectId}
+        onSuccess={fetchInvestors}
       />
 
       <EditProjectModal
