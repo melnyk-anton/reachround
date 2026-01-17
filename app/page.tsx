@@ -2,7 +2,6 @@ import { Navigation } from '@/components/landing/Navigation'
 import { HeroSection } from '@/components/landing/HeroSection'
 import { DashboardPreview } from '@/components/landing/DashboardPreview'
 import { TrustBadge } from '@/components/landing/TrustBadge'
-import { LogoMarquee } from '@/components/landing/LogoMarquee'
 import { FeatureCards } from '@/components/landing/FeatureCards'
 
 export default function Home() {
@@ -14,7 +13,6 @@ export default function Home() {
         <HeroSection />
         <DashboardPreview />
         <TrustBadge />
-        <LogoMarquee />
         <FeatureCards />
       </main>
 

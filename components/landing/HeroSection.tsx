@@ -13,21 +13,21 @@ export function HeroSection() {
         {/* Badges */}
         <div className="inline-flex items-center gap-3 text-xs text-gray-500 dark:text-gray-400 mb-6">
           <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800/50 rounded-full">
-            ⭐ 82K Reviews
+            🤖 AI-Powered Research
           </span>
           <span className="px-3 py-1 bg-gray-100 dark:bg-gray-800/50 rounded-full">
-            😊 102K Happy Clients
+            ✉️ Personalized Emails
           </span>
         </div>
 
         {/* Headline */}
         <h1 className="text-[clamp(2.5rem,5vw,4.5rem)] font-semibold leading-[1.1] tracking-tight text-foreground dark:text-foreground mb-6 animate-fade-in-up">
-          Simplify Your Finances With Confidence
+          Reach Investors Who Actually Care
         </h1>
 
         {/* Subheadline */}
         <p className="max-w-2xl mx-auto text-lg leading-relaxed text-gray-600 dark:text-gray-400 mb-8">
-          Finotive is a cutting-edge fintech company at the forefront of financial innovation. We provide innovative solutions and services that empower individuals and businesses.
+          ReachRound uses AI to research investors deeply and write highly personalized cold emails. Every email looks like you spent 30 minutes researching that specific investor.
         </p>
 
         {/* CTA Button */}
@@ -35,7 +35,7 @@ export function HeroSection() {
           href="/login"
           className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-primary-500/20 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-105"
         >
-          Get Started
+          Start Free Trial
           <ArrowUpRight className="w-5 h-5" />
         </Link>
       </div>

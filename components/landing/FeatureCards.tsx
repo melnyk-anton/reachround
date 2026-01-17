@@ -1,14 +1,14 @@
 export function FeatureCards() {
   const features = [
     {
-      title: 'Simplify the way you see your money',
-      description: 'Connect your financial world into one seamless experience, built for focus and control.',
-      visual: 'dashboard',
+      title: 'AI-Powered Deep Research',
+      description: 'Our AI performs multi-step research on each investor, analyzing recent investments, tweets, podcasts, and industry views to find perfect talking points.',
+      visual: 'research',
     },
     {
-      title: 'User-friendly dashboard',
-      description: 'An intuitive dashboard that boosts navigation and productivity.',
-      visual: 'chart',
+      title: 'Personalized Email Generation',
+      description: 'Every email references specific insights about the investor. No generic templates—each message looks like you spent 30 minutes researching.',
+      visual: 'email',
     },
   ]
 
@@ -30,7 +30,7 @@ export function FeatureCards() {
             {/* Visual Placeholder */}
             <div className="aspect-video bg-gradient-to-br from-primary-500/10 to-secondary-500/10 dark:from-primary-500/10 dark:to-secondary-500/10 rounded-lg flex items-center justify-center">
               <div className="text-gray-400 dark:text-gray-500">
-                {feature.visual === 'dashboard' ? '📊 Dashboard Preview' : '📈 Chart Visualization'}
+                {feature.visual === 'research' ? '🔍 Research Preview' : '✉️ Email Preview'}
               </div>
             </div>
           </div>

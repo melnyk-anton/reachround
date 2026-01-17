@@ -4,10 +4,34 @@ import { useAuth } from '@/lib/auth/AuthProvider'
 import { Button } from '@/components/ui/button'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
+import { useEffect, useState } from 'react'
+import type { Project } from '@/types'
+import Link from 'next/link'
+import { Plus } from 'lucide-react'
 
 export default function DashboardPage() {
   const { user, session, signOut } = useAuth()
   const router = useRouter()
+  const [projects, setProjects] = useState<Project[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetchProjects()
+  }, [])
+
+  const fetchProjects = async () => {
+    try {
+      const response = await fetch('/api/projects')
+      if (!response.ok) throw new Error('Failed to fetch projects')
+      const data = await response.json()
+      setProjects(data)
+    } catch (error) {
+      console.error('Error fetching projects:', error)
+      toast.error('Failed to load projects')
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleSignOut = async () => {
     try {
@@ -100,8 +124,10 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                 </svg>
               </div>
-              <p className="text-3xl font-bold">0</p>
-              <p className="text-xs text-muted-foreground mt-1">Create your first project</p>
+              <p className="text-3xl font-bold">{loading ? '...' : projects.length}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {projects.length === 0 ? 'Create your first project' : 'Active projects'}
+              </p>
             </div>
 
             <div className="bg-card border rounded-lg p-6">
@@ -181,11 +207,65 @@ export default function DashboardPage() {
             </div>
 
             <div className="mt-6">
-              <Button disabled className="w-full">
-                Create Your First Project (Coming Soon)
-              </Button>
+              <Link href="/dashboard/new-project">
+                <Button className="w-full">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Create Your First Project
+                </Button>
+              </Link>
             </div>
           </div>
+
+          {/* Projects List */}
+          {projects.length > 0 && (
+            <div className="mt-8">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-lg font-semibold">Your Projects</h3>
+                <Link href="/dashboard/new-project">
+                  <Button size="sm">
+                    <Plus className="w-4 h-4 mr-2" />
+                    New Project
+                  </Button>
+                </Link>
+              </div>
+              <div className="grid gap-4">
+                {projects.map((project) => (
+                  <Link
+                    key={project.id}
+                    href={`/dashboard/${project.id}`}
+                    className="bg-card border rounded-lg p-6 hover:border-primary-500 transition-colors"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <h4 className="text-lg font-semibold mb-1">{project.name}</h4>
+                        <p className="text-sm text-muted-foreground mb-3">{project.one_liner}</p>
+                        <div className="flex flex-wrap gap-2">
+                          {project.industry && (
+                            <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
+                              {project.industry}
+                            </span>
+                          )}
+                          {project.stage && (
+                            <span className="text-xs px-2 py-1 bg-secondary/10 text-secondary rounded">
+                              {project.stage}
+                            </span>
+                          )}
+                          {project.funding_ask && (
+                            <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
+                              {project.funding_ask}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <svg className="w-5 h-5 text-muted-foreground flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Debug Info (for development) */}
           <div className="mt-8 bg-muted p-4 rounded-lg">

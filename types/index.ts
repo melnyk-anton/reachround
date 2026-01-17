@@ -18,16 +18,11 @@ export interface Project {
   one_liner: string | null
   industry: string | null
   stage: string | null
-  location: string | null
+  target_geography: string | null
   funding_ask: string | null
   pitch_deck_url: string | null
-  pitch_deck_summary: string | null
-  additional_context: string | null
-  writing_style_notes: string | null
-  founder_name: string | null
-  founder_background: string | null
+  pitch_summary: string | null
   created_at: string
-  updated_at: string
 }
 
 export interface Investor {

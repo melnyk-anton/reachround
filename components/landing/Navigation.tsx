@@ -8,8 +8,6 @@ import { ThemeSwitch } from '../ui/theme-switch'
 export function Navigation() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
-  const menuItems = ['Features', 'Solutions', 'Contact', 'FAQ']
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 dark:bg-background/80 backdrop-blur-lg border-b border-border dark:border-border">
       <div className="container mx-auto px-4 lg:px-8">
@@ -20,19 +18,6 @@ export function Navigation() {
               ReachRound
             </span>
           </Link>
-
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            {menuItems.map((item) => (
-              <Link
-                key={item}
-                href={`#${item.toLowerCase()}`}
-                className="text-sm text-gray-600 dark:text-gray-300 hover:text-foreground dark:hover:text-foreground transition-colors"
-              >
-                {item}
-              </Link>
-            ))}
-          </div>
 
           {/* Right Side - Theme + Auth */}
           <div className="flex items-center gap-4">
@@ -65,32 +50,22 @@ export function Navigation() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border dark:border-border">
-            <div className="flex flex-col gap-4">
-              {menuItems.map((item) => (
-                <Link
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  className="text-gray-600 dark:text-gray-300 hover:text-foreground dark:hover:text-foreground transition-colors py-2"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item}
-                </Link>
-              ))}
-              <div className="flex flex-col gap-3 pt-4 border-t border-border dark:border-border">
-                <Link
-                  href="/login"
-                  className="text-gray-600 dark:text-gray-300 hover:text-foreground dark:hover:text-foreground transition-colors py-2"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/login"
-                  className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
-                >
-                  Sign Up
-                  <ArrowUpRight className="w-4 h-4" />
-                </Link>
-              </div>
+            <div className="flex flex-col gap-3">
+              <Link
+                href="/login"
+                className="text-gray-600 dark:text-gray-300 hover:text-foreground dark:hover:text-foreground transition-colors py-2"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                href="/login"
+                className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Sign Up
+                <ArrowUpRight className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         )}
