@@ -24,8 +24,13 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
+    console.log('[API] Creating project - Start')
+
     const supabase = createServerClient()
-    const { data: { user } } = await supabase.auth.getUser()
+    console.log('[API] Supabase client created')
+
+    const { data: { user }, error: authError } = await supabase.auth.getUser()
+    console.log('[API] User:', user?.email, 'Auth error:', authError?.message)
 
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -33,6 +38,7 @@ export async function POST(request: Request) {
 
     const body = await request.json()
     const { name, one_liner, industry, stage, target_geography } = body
+    console.log('[API] Request body:', { name, one_liner, industry, stage, target_geography })
 
     if (!name || !one_liner) {
       return NextResponse.json(
@@ -41,7 +47,7 @@ export async function POST(request: Request) {
       )
     }
 
-    const project = await createProject({
+    const projectData = {
       user_id: user.id,
       name,
       one_liner,
@@ -50,7 +56,11 @@ export async function POST(request: Request) {
       target_geography,
       pitch_deck_url: null,
       pitch_summary: null,
-    })
+    }
+    console.log('[API] Project data to insert:', projectData)
+
+    const project = await createProject(projectData)
+    console.log('[API] Project created successfully:', project.id)
 
     return NextResponse.json(project, { status: 201 })
   } catch (error) {

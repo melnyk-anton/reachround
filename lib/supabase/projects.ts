@@ -28,7 +28,10 @@ export async function getProject(id: string): Promise<Project | null> {
 }
 
 export async function createProject(project: Omit<Project, 'id' | 'created_at'>): Promise<Project> {
+  console.log('[DB] createProject called with:', project)
+
   const supabase = createClient()
+  console.log('[DB] Client created, inserting...')
 
   const { data, error } = await (supabase as any)
     .from('projects')
@@ -36,7 +39,18 @@ export async function createProject(project: Omit<Project, 'id' | 'created_at'>)
     .select()
     .single()
 
-  if (error) throw error
+  console.log('[DB] Insert result - data:', data, 'error:', error)
+
+  if (error) {
+    console.error('[DB] Insert error details:', {
+      message: error.message,
+      details: error.details,
+      hint: error.hint,
+      code: error.code
+    })
+    throw error
+  }
+
   return data as Project
 }
 
