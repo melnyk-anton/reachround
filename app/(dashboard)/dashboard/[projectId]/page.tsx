@@ -8,6 +8,7 @@ import { toast } from 'sonner'
 import type { Project } from '@/types'
 import { Button } from '@/components/ui/button'
 import { InvestorFinderModal } from '@/components/investors/InvestorFinderModal'
+import { EditProjectModal } from '@/components/projects/EditProjectModal'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
 
 interface Investor {
@@ -32,6 +33,7 @@ export default function ProjectDetailPage() {
   const [investors, setInvestors] = useState<Investor[]>([])
   const [loading, setLoading] = useState(true)
   const [finderModalOpen, setFinderModalOpen] = useState(false)
+  const [editModalOpen, setEditModalOpen] = useState(false)
 
   const fetchProject = async () => {
     try {
@@ -121,7 +123,7 @@ export default function ProjectDetailPage() {
                 )}
               </div>
             </div>
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => setEditModalOpen(true)}>
               Edit Project
             </Button>
           </div>
@@ -316,6 +318,13 @@ export default function ProjectDetailPage() {
         onClose={() => setFinderModalOpen(false)}
         projectId={projectId}
         projectName={project.name}
+      />
+
+      <EditProjectModal
+        open={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        project={project}
+        onSuccess={fetchProject}
       />
     </div>
   )
