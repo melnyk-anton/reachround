@@ -78,11 +78,6 @@ export default function ProjectDetailPage() {
                     {project.stage}
                   </span>
                 )}
-                {project.funding_ask && (
-                  <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
-                    {project.funding_ask}
-                  </span>
-                )}
                 {project.target_geography && (
                   <span className="text-xs px-2 py-1 bg-muted text-muted-foreground rounded">
                     {project.target_geography}

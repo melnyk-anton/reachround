@@ -16,7 +16,6 @@ export default function NewProjectPage() {
     industry: '',
     stage: '',
     target_geography: '',
-    funding_ask: '',
   })
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -147,20 +146,6 @@ export default function NewProjectPage() {
               onChange={(e) => setFormData({ ...formData, target_geography: e.target.value })}
               className="w-full px-4 py-2 bg-background dark:bg-gray-900 border border-border dark:border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-foreground dark:text-foreground"
               placeholder="North America, Europe, Global, etc."
-            />
-          </div>
-
-          <div>
-            <label htmlFor="funding_ask" className="block text-sm font-medium text-foreground dark:text-foreground mb-2">
-              Funding Ask
-            </label>
-            <input
-              type="text"
-              id="funding_ask"
-              value={formData.funding_ask}
-              onChange={(e) => setFormData({ ...formData, funding_ask: e.target.value })}
-              className="w-full px-4 py-2 bg-background dark:bg-gray-900 border border-border dark:border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-foreground dark:text-foreground"
-              placeholder="$500K, $2M, etc."
             />
           </div>
 

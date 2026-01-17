@@ -19,7 +19,6 @@ export interface Project {
   industry: string | null
   stage: string | null
   target_geography: string | null
-  funding_ask: string | null
   pitch_deck_url: string | null
   pitch_summary: string | null
   created_at: string

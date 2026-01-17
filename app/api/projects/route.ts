@@ -32,7 +32,7 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json()
-    const { name, one_liner, industry, stage, target_geography, funding_ask } = body
+    const { name, one_liner, industry, stage, target_geography } = body
 
     if (!name || !one_liner) {
       return NextResponse.json(
@@ -48,7 +48,6 @@ export async function POST(request: Request) {
       industry,
       stage,
       target_geography,
-      funding_ask,
       pitch_deck_url: null,
       pitch_summary: null,
     })
