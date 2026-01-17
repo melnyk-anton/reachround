@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
+import type { Project } from '@/types'
 
 export async function POST(
   request: Request,
@@ -18,7 +19,7 @@ export async function POST(
       .from('projects')
       .select('*')
       .eq('id', params.id)
-      .single()
+      .single<Project>()
 
     if (projectError || !project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
@@ -47,11 +48,11 @@ export async function POST(
       linkedin_url: linkedin_url || null,
       twitter_url: twitter_url || null,
       source: source || 'manual',
-      research_status: 'pending',
+      research_status: 'pending' as const,
     }
 
-    const { data: investor, error } = await supabase
-      .from('investors')
+    const { data: investor, error } = await (supabase
+      .from('investors') as any)
       .insert([investorData])
       .select()
       .single()
@@ -91,7 +92,7 @@ export async function GET(
       .from('projects')
       .select('*')
       .eq('id', params.id)
-      .single()
+      .single<Project>()
 
     if (projectError || !project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })

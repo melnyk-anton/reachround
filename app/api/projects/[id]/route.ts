@@ -19,7 +19,7 @@ export async function GET(
       .from('projects')
       .select('*')
       .eq('id', params.id)
-      .single()
+      .single<Project>()
 
     if (error) {
       console.error('Error fetching project:', error)
@@ -57,7 +57,7 @@ export async function PUT(
       .from('projects')
       .select('*')
       .eq('id', params.id)
-      .single()
+      .single<Project>()
 
     if (fetchError || !existingProject) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
@@ -69,8 +69,8 @@ export async function PUT(
 
     // Update using the server client
     const body = await request.json()
-    const { data: updatedProject, error: updateError } = await supabase
-      .from('projects')
+    const { data: updatedProject, error: updateError } = await (supabase
+      .from('projects') as any)
       .update(body)
       .eq('id', params.id)
       .select()
@@ -108,7 +108,7 @@ export async function DELETE(
       .from('projects')
       .select('*')
       .eq('id', params.id)
-      .single()
+      .single<Project>()
 
     if (fetchError || !project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })

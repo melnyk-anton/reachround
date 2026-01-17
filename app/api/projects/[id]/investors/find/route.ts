@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
 import { findInvestors } from '@/lib/agents/investor-finder'
+import type { Project } from '@/types'
 
 export async function POST(
   request: Request,
@@ -19,7 +20,7 @@ export async function POST(
       .from('projects')
       .select('*')
       .eq('id', params.id)
-      .single()
+      .single<Project>()
 
     if (projectError || !project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })

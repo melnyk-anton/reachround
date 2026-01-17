@@ -71,8 +71,8 @@ export async function POST(request: Request) {
     console.log('[API] Project data to insert:', projectData)
 
     // Insert directly using the server client (which has auth context)
-    const { data, error } = await supabase
-      .from('projects')
+    const { data, error } = await (supabase
+      .from('projects') as any)
       .insert([projectData])
       .select()
       .single()
