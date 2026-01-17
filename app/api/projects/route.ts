@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { getProjects } from '@/lib/supabase/projects'
 import type { Project } from '@/types'
 
 export async function GET() {
@@ -12,8 +11,19 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const projects = await getProjects(user.id)
-    return NextResponse.json(projects)
+    // Query directly using the server client (which has auth context)
+    const { data, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+
+    if (error) {
+      console.error('Error fetching projects:', error)
+      throw error
+    }
+
+    return NextResponse.json(data || [])
   } catch (error) {
     console.error('Error fetching projects:', error)
     return NextResponse.json(

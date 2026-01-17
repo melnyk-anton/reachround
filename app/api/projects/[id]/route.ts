@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createServerClient } from '@/lib/supabase/server'
-import { getProject, updateProject, deleteProject } from '@/lib/supabase/projects'
+import type { Project } from '@/types'
 
 export async function GET(
   request: Request,
@@ -14,13 +14,19 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const project = await getProject(params.id)
+    // Query directly using the server client (which has auth context)
+    const { data: project, error } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', params.id)
+      .single()
 
-    if (!project) {
+    if (error) {
+      console.error('Error fetching project:', error)
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    if (project.user_id !== user.id) {
+    if (!project || project.user_id !== user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
@@ -46,18 +52,34 @@ export async function PUT(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const project = await getProject(params.id)
+    // First check if project exists and user owns it
+    const { data: existingProject, error: fetchError } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', params.id)
+      .single()
 
-    if (!project) {
+    if (fetchError || !existingProject) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
-    if (project.user_id !== user.id) {
+    if (existingProject.user_id !== user.id) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
+    // Update using the server client
     const body = await request.json()
-    const updatedProject = await updateProject(params.id, body)
+    const { data: updatedProject, error: updateError } = await supabase
+      .from('projects')
+      .update(body)
+      .eq('id', params.id)
+      .select()
+      .single()
+
+    if (updateError) {
+      console.error('Error updating project:', updateError)
+      throw updateError
+    }
 
     return NextResponse.json(updatedProject)
   } catch (error) {
@@ -81,9 +103,14 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const project = await getProject(params.id)
+    // First check if project exists and user owns it
+    const { data: project, error: fetchError } = await supabase
+      .from('projects')
+      .select('*')
+      .eq('id', params.id)
+      .single()
 
-    if (!project) {
+    if (fetchError || !project) {
       return NextResponse.json({ error: 'Project not found' }, { status: 404 })
     }
 
@@ -91,7 +118,16 @@ export async function DELETE(
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
-    await deleteProject(params.id)
+    // Delete using the server client
+    const { error: deleteError } = await supabase
+      .from('projects')
+      .delete()
+      .eq('id', params.id)
+
+    if (deleteError) {
+      console.error('Error deleting project:', deleteError)
+      throw deleteError
+    }
 
     return NextResponse.json({ success: true })
   } catch (error) {
