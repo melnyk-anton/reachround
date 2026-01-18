@@ -12,10 +12,11 @@ interface AddInvestorModalProps {
   open: boolean
   onClose: () => void
   projectId: string
+  campaignId: string
   onSuccess: () => void
 }
 
-export function AddInvestorModal({ open, onClose, projectId, onSuccess }: AddInvestorModalProps) {
+export function AddInvestorModal({ open, onClose, projectId, campaignId, onSuccess }: AddInvestorModalProps) {
   const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
     name: '',
@@ -36,7 +37,7 @@ export function AddInvestorModal({ open, onClose, projectId, onSuccess }: AddInv
 
     setSaving(true)
     try {
-      const response = await fetch(`/api/projects/${projectId}/investors`, {
+      const response = await fetch(`/api/campaigns/${campaignId}/investors`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

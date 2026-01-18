@@ -164,7 +164,7 @@ Focus on finding specific, recent, and actionable information that can be refere
 Return ONLY the JSON object, no additional text.`
 
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-latest',
+      model: 'claude-sonnet-4-5-20250929',
       max_tokens: 4096,
       system: systemPrompt,
       messages: [

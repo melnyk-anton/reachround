@@ -86,19 +86,19 @@ export default function NewProjectPage() {
 
           <div>
             <label htmlFor="one_liner" className="block text-sm font-medium text-foreground dark:text-foreground mb-2">
-              One-Liner *
+              Project Description *
             </label>
-            <input
-              type="text"
+            <textarea
               id="one_liner"
               required
+              rows={5}
               value={formData.one_liner}
               onChange={(e) => setFormData({ ...formData, one_liner: e.target.value })}
-              className="w-full px-4 py-2 bg-background dark:bg-gray-900 border border-border dark:border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-foreground dark:text-foreground"
-              placeholder="AI-powered solution for..."
+              className="w-full px-4 py-2 bg-background dark:bg-gray-900 border border-border dark:border-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 text-foreground dark:text-foreground resize-none"
+              placeholder="Describe your project in detail. What problem are you solving? Who are your customers? What traction do you have? Include any key metrics, achievements, or unique differentiators..."
             />
             <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              A brief description of what your company does
+              Provide detailed context about your project. The more information, the better the AI can personalize emails to investors.
             </p>
           </div>
 
@@ -153,7 +153,7 @@ export default function NewProjectPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-primary-600 hover:bg-primary-700 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors"
+              className="flex-1 bg-purple-700 hover:bg-purple-800 disabled:bg-gray-400 text-white px-6 py-3 rounded-lg font-medium transition-colors"
             >
               {loading ? 'Creating...' : 'Create Project'}
             </button>

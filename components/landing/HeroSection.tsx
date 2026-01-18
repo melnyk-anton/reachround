@@ -33,9 +33,9 @@ export function HeroSection() {
         {/* CTA Button */}
         <Link
           href="/login"
-          className="inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-primary-500/20 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-105"
+          className="inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-800 text-white px-8 py-4 rounded-lg font-medium transition-all duration-200 shadow-lg shadow-purple-900/20 hover:shadow-xl hover:shadow-purple-900/30 hover:scale-105"
         >
-          Start Free Trial
+          Start for Free
           <ArrowUpRight className="w-5 h-5" />
         </Link>
       </div>

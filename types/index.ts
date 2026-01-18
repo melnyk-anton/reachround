@@ -24,9 +24,20 @@ export interface Project {
   created_at: string
 }
 
+export interface Campaign {
+  id: string
+  project_id: string
+  name: string
+  ask: string
+  status: 'active' | 'paused' | 'completed'
+  created_at: string
+  updated_at: string
+}
+
 export interface Investor {
   id: string
   project_id: string
+  campaign_id: string
   name: string
   email: string | null
   firm: string | null

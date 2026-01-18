@@ -105,7 +105,7 @@ Return ONLY the JSON object with subject and body.`
 
   try {
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-latest',
+      model: 'claude-sonnet-4-5-20250929',
       max_tokens: 2048,
       system: systemPrompt,
       messages: [
@@ -172,7 +172,7 @@ Return ONLY the JSON object with the new subject and body.`
 
   try {
     const message = await anthropic.messages.create({
-      model: 'claude-3-5-sonnet-latest',
+      model: 'claude-sonnet-4-5-20250929',
       max_tokens: 2048,
       system: systemPrompt,
       messages: [

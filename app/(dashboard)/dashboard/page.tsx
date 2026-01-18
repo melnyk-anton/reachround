@@ -9,15 +9,20 @@ import type { Project } from '@/types'
 import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { ThemeToggle } from '@/components/layout/ThemeToggle'
+import { GmailConnectButton } from '@/components/gmail/GmailConnectButton'
 
 export default function DashboardPage() {
-  const { user, session, signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const router = useRouter()
   const [projects, setProjects] = useState<Project[]>([])
   const [loading, setLoading] = useState(true)
+  const [hasGmailAccess, setHasGmailAccess] = useState(false)
+  const [stats, setStats] = useState({ investors: 0, emailsSent: 0 })
 
   useEffect(() => {
     fetchProjects()
+    checkGmailConnection()
+    fetchStats()
   }, [])
 
   const fetchProjects = async () => {
@@ -34,6 +39,30 @@ export default function DashboardPage() {
     }
   }
 
+  const checkGmailConnection = async () => {
+    try {
+      const response = await fetch('/api/auth/gmail/status')
+      if (response.ok) {
+        const data = await response.json()
+        setHasGmailAccess(data.connected)
+      }
+    } catch (error) {
+      console.error('Error checking Gmail connection:', error)
+    }
+  }
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/stats')
+      if (response.ok) {
+        const data = await response.json()
+        setStats(data)
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    }
+  }
+
   const handleSignOut = async () => {
     try {
       await signOut()
@@ -44,9 +73,6 @@ export default function DashboardPage() {
       toast.error('Failed to sign out')
     }
   }
-
-  // Check if user has Gmail access
-  const hasGmailAccess = session?.provider_token !== null
 
   return (
     <div className="min-h-screen bg-background">
@@ -86,33 +112,18 @@ export default function DashboardPage() {
               Your AI-powered investor outreach platform is ready.
             </p>
 
-            {/* Gmail Status */}
-            {hasGmailAccess ? (
-              <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <h3 className="font-semibold text-green-900 dark:text-green-100">Gmail Connected</h3>
+            {/* Gmail Status - Only show if not connected */}
+            {!hasGmailAccess && (
+              <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4 mb-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="font-semibold text-blue-900 dark:text-blue-100 mb-1">Gmail Connection</h3>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">
+                      Connect Gmail to send personalized emails to investors
+                    </p>
+                  </div>
+                  <GmailConnectButton size="sm" />
                 </div>
-                <p className="text-sm text-green-700 dark:text-green-300">
-                  You&apos;re all set to send emails from your Gmail account!
-                </p>
-              </div>
-            ) : (
-              <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4 mb-4">
-                <div className="flex items-center gap-2 mb-2">
-                  <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                  </svg>
-                  <h3 className="font-semibold text-amber-900 dark:text-amber-100">Gmail Not Connected</h3>
-                </div>
-                <p className="text-sm text-amber-700 dark:text-amber-300 mb-3">
-                  We need Gmail access to send emails on your behalf. Please sign out and sign in again to grant Gmail permissions.
-                </p>
-                <Button onClick={handleSignOut} size="sm" variant="outline">
-                  Sign Out & Reconnect
-                </Button>
               </div>
             )}
           </div>
@@ -139,8 +150,10 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
               </div>
-              <p className="text-3xl font-bold">0</p>
-              <p className="text-xs text-muted-foreground mt-1">Find investors with AI</p>
+              <p className="text-3xl font-bold">{loading ? '...' : stats.investors}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {stats.investors === 0 ? 'Find investors with AI' : 'Total investors found'}
+              </p>
             </div>
 
             <div className="bg-card border rounded-lg p-6">
@@ -150,73 +163,77 @@ export default function DashboardPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                 </svg>
               </div>
-              <p className="text-3xl font-bold">0</p>
-              <p className="text-xs text-muted-foreground mt-1">Start reaching out</p>
+              <p className="text-3xl font-bold">{loading ? '...' : stats.emailsSent}</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {stats.emailsSent === 0 ? 'Start reaching out' : 'Total emails sent'}
+              </p>
             </div>
           </div>
 
-          {/* Next Steps */}
-          <div className="bg-card border rounded-lg p-6">
-            <h3 className="text-lg font-semibold mb-4">Next Steps</h3>
-            <div className="space-y-3">
-              <div className="flex items-start gap-3">
-                <div className="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
-                  1
+          {/* Next Steps - Only show when no projects exist */}
+          {projects.length === 0 && !loading && (
+            <div className="bg-card border rounded-lg p-6">
+              <h3 className="text-lg font-semibold mb-4">Next Steps</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <div className="bg-primary/10 text-primary rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
+                    1
+                  </div>
+                  <div>
+                    <h4 className="font-medium">Create Your Project</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Add your startup information so AI can personalize emails
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-medium">Create Your Project</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Add your startup information so AI can personalize emails
-                  </p>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
+                    2
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-muted-foreground">Find Investors</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Let AI discover investors matching your startup
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
+                    3
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-muted-foreground">Deep Research</h4>
+                    <p className="text-sm text-muted-foreground">
+                      AI researches each investor&apos;s background and interests
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <div className="bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
+                    4
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-muted-foreground">Review & Send</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Approve personalized emails and send from your Gmail
+                    </p>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3">
-                <div className="bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
-                  2
-                </div>
-                <div>
-                  <h4 className="font-medium text-muted-foreground">Find Investors</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Let AI discover investors matching your startup
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
-                  3
-                </div>
-                <div>
-                  <h4 className="font-medium text-muted-foreground">Deep Research</h4>
-                  <p className="text-sm text-muted-foreground">
-                    AI researches each investor&apos;s background and interests
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="bg-muted text-muted-foreground rounded-full w-6 h-6 flex items-center justify-center text-sm font-semibold flex-shrink-0">
-                  4
-                </div>
-                <div>
-                  <h4 className="font-medium text-muted-foreground">Review & Send</h4>
-                  <p className="text-sm text-muted-foreground">
-                    Approve personalized emails and send from your Gmail
-                  </p>
-                </div>
+              <div className="mt-6">
+                <Link href="/dashboard/new-project">
+                  <Button className="w-full">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create Your First Project
+                  </Button>
+                </Link>
               </div>
             </div>
-
-            <div className="mt-6">
-              <Link href="/dashboard/new-project">
-                <Button className="w-full">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Create Your First Project
-                </Button>
-              </Link>
-            </div>
-          </div>
+          )}
 
           {/* Projects List */}
           {projects.length > 0 && (
@@ -232,15 +249,13 @@ export default function DashboardPage() {
               </div>
               <div className="grid gap-4">
                 {projects.map((project) => (
-                  <Link
+                  <div
                     key={project.id}
-                    href={`/dashboard/${project.id}`}
                     className="bg-card border rounded-lg p-6 hover:border-primary-500 transition-colors"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h4 className="text-lg font-semibold mb-1">{project.name}</h4>
-                        <p className="text-sm text-muted-foreground mb-3">{project.one_liner}</p>
+                      <Link href={`/dashboard/${project.id}`} className="flex-1">
+                        <h4 className="text-lg font-semibold mb-3 hover:text-primary-500 transition-colors">{project.name}</h4>
                         <div className="flex flex-wrap gap-2">
                           {project.industry && (
                             <span className="text-xs px-2 py-1 bg-primary/10 text-primary rounded">
@@ -258,30 +273,21 @@ export default function DashboardPage() {
                             </span>
                           )}
                         </div>
+                      </Link>
+                      <div className="flex items-center gap-2 ml-4">
+                        <Link href={`/dashboard/${project.id}/edit`}>
+                          <Button size="sm" variant="outline">
+                            Edit
+                          </Button>
+                        </Link>
                       </div>
-                      <svg className="w-5 h-5 text-muted-foreground flex-shrink-0 ml-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* Debug Info (for development) */}
-          <div className="mt-8 bg-muted p-4 rounded-lg">
-            <details>
-              <summary className="text-sm font-medium cursor-pointer">Debug Info</summary>
-              <div className="mt-2 text-xs space-y-1">
-                <p><strong>User ID:</strong> {user?.id}</p>
-                <p><strong>Email:</strong> {user?.email}</p>
-                <p><strong>Provider Token:</strong> {session?.provider_token ? '✓ Present' : '✗ Missing'}</p>
-                <p><strong>Provider Refresh Token:</strong> {session?.provider_refresh_token ? '✓ Present' : '✗ Missing'}</p>
-                <p><strong>Session Expires:</strong> {session?.expires_at ? new Date(session.expires_at * 1000).toLocaleString() : 'N/A'}</p>
-              </div>
-            </details>
-          </div>
         </div>
       </main>
     </div>

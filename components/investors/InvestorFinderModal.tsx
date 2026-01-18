@@ -14,7 +14,9 @@ interface InvestorFinderModalProps {
   open: boolean
   onClose: () => void
   projectId: string
-  projectName: string
+  campaignId: string
+  campaignAsk?: string
+  onSuccess?: () => void
 }
 
 interface InvestorMatch {
@@ -28,7 +30,7 @@ interface InvestorMatch {
   selected?: boolean
 }
 
-export function InvestorFinderModal({ open, onClose, projectId, projectName }: InvestorFinderModalProps) {
+export function InvestorFinderModal({ open, onClose, projectId, campaignId, campaignAsk, onSuccess }: InvestorFinderModalProps) {
   const [count, setCount] = useState('5')
   const [criteria, setCriteria] = useState('')
   const [geography, setGeography] = useState('')
@@ -51,6 +53,8 @@ export function InvestorFinderModal({ open, onClose, projectId, projectName }: I
           count: parseInt(count),
           criteria: criteria || undefined,
           geography: geography || undefined,
+          campaignId,
+          ask: campaignAsk || undefined,
         }),
       })
 
@@ -86,7 +90,7 @@ export function InvestorFinderModal({ open, onClose, projectId, projectName }: I
     setAdding(true)
     try {
       const promises = selected.map(async (investor) => {
-        const response = await fetch(`/api/projects/${projectId}/investors`, {
+        const response = await fetch(`/api/campaigns/${campaignId}/investors`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -108,8 +112,8 @@ export function InvestorFinderModal({ open, onClose, projectId, projectName }: I
 
       await Promise.all(promises)
       toast.success(`Added ${selected.length} investors!`)
+      if (onSuccess) onSuccess()
       onClose()
-      window.location.reload() // Refresh to show new investors
     } catch (error) {
       console.error('Error adding investors:', error)
       toast.error(error instanceof Error ? error.message : 'Failed to add investors')
@@ -134,7 +138,7 @@ export function InvestorFinderModal({ open, onClose, projectId, projectName }: I
         <DialogHeader>
           <DialogTitle>Find Investors with AI</DialogTitle>
           <DialogDescription>
-            Let AI discover investors that match {projectName} using advanced search
+            Let AI discover investors for this campaign using advanced search
           </DialogDescription>
         </DialogHeader>
 

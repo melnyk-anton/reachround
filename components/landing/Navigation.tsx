@@ -30,7 +30,7 @@ export function Navigation() {
             </Link>
             <Link
               href="/login"
-              className="hidden md:inline-flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-2.5 rounded-lg transition-colors text-sm font-medium"
+              className="hidden md:inline-flex items-center gap-2 bg-purple-700 hover:bg-purple-800 text-white px-6 py-2.5 rounded-lg transition-colors text-sm font-medium"
             >
               Sign Up
               <ArrowUpRight className="w-4 h-4" />
@@ -60,7 +60,7 @@ export function Navigation() {
               </Link>
               <Link
                 href="/login"
-                className="inline-flex items-center justify-center gap-2 bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg transition-colors font-medium"
+                className="inline-flex items-center justify-center gap-2 bg-purple-700 hover:bg-purple-800 text-white px-6 py-3 rounded-lg transition-colors font-medium"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sign Up

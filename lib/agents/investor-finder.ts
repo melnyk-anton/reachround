@@ -19,13 +19,14 @@ export interface InvestorFinderInput {
   oneLiner: string
   industry?: string
   stage?: string
+  ask?: string
   targetGeography?: string
   additionalCriteria?: string
   count: number
 }
 
 export async function findInvestors(input: InvestorFinderInput): Promise<InvestorMatch[]> {
-  const { projectName, oneLiner, industry, stage, targetGeography, additionalCriteria, count } = input
+  const { projectName, oneLiner, industry, stage, ask, targetGeography, additionalCriteria, count } = input
 
   const systemPrompt = `You are an expert investor research assistant. Your job is to find relevant investors for startups.
 
@@ -65,10 +66,11 @@ Output your response as a JSON array with this structure:
 **Description:** ${oneLiner}
 ${industry ? `**Industry:** ${industry}` : ''}
 ${stage ? `**Stage:** ${stage}` : ''}
+${ask ? `**What they're asking for:** ${ask}` : ''}
 ${targetGeography ? `**Target Geography:** ${targetGeography}` : ''}
 ${additionalCriteria ? `**Additional Criteria:** ${additionalCriteria}` : ''}
 
-Please identify ${count} investors who would be most likely to invest in this company. Focus on recent activity (2023-2025) and investors who are actively investing.
+Please identify ${count} investors who would be most likely to invest in this company${ask ? ` based on what they're asking for (${ask})` : ''}. Focus on recent activity (2023-2025) and investors who are actively investing.
 
 Return ONLY the JSON array, no additional text.`
 
